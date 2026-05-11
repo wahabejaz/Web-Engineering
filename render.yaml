@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: portfolio
+    runtime: python
+    plan: free
+    pythonVersion: 3.14
+    buildCommand: bash build.sh
+    startCommand: gunicorn portfolio.wsgi --workers 1 --bind 0.0.0.0:$PORT --timeout 120 --access-logfile - --error-logfile -
+    envVars:
+      - key: DJANGO_SECRET_KEY
+        scope: build,runtime
+        value: "django-insecure-@zsin8o4-u6^tskgn*vap__^di*e4nb_r!9jd@95+=f=2ccfck"
+      - key: DJANGO_DEBUG
+        scope: build,runtime
+        value: "False"
+      - key: DJANGO_ALLOWED_HOSTS
+        scope: build,runtime
+        value: ".onrender.com,.herokuapp.com,localhost,127.0.0.1"
+      - key: DJANGO_LOG_LEVEL
+        scope: build,runtime
+        value: "DEBUG"
