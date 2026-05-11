@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+
+{% block title %}Search Results - Wahab Ejaz{% endblock %}
+
+{% block content %}
+
+<section class="min-h-screen py-20">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="mb-12">
+            <h1 class="text-5xl font-bold mb-4">Search Projects</h1>
+            
+            <!-- Search Form -->
+            <form method="GET" class="flex gap-2 mb-8">
+                <input 
+                    type="text" 
+                    name="q" 
+                    value="{{ query }}"
+                    placeholder="Search projects, skills, technologies..." 
+                    class="flex-1 p-4 bg-zinc-900 rounded-xl border border-zinc-700 focus:border-cyan-400 focus:outline-none"
+                >
+                <button type="submit" class="bg-cyan-500 hover:bg-cyan-600 px-8 py-4 rounded-xl font-semibold transition">
+                    <i class="fas fa-search"></i> Search
+                </button>
+            </form>
+
+            {% if query %}
+            <p class="text-gray-400">
+                Found <span class="text-cyan-400 font-bold">{{ results_count }}</span> 
+                project{{ results_count|pluralize }} matching "{{ query }}"
+            </p>
+            {% endif %}
+        </div>
+
+        <!-- Search Results -->
+        {% if projects_page %}
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+                {% for project in projects_page %}
+                <div class="bg-zinc-900 rounded-2xl overflow-hidden hover-scale hover:shadow-2xl shadow-lg">
+                    {% if project.image %}
+                    <img 
+                        src="{{ project.image.url }}" 
+                        alt="{{ project.title }}"
+                        class="w-full h-56 object-cover"
+                    >
+                    {% else %}
+                    <div class="w-full h-56 bg-gradient-to-br from-cyan-900 to-zinc-900 flex items-center justify-center">
+                        <i class="fas fa-image text-gray-600 text-3xl"></i>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="p-6">
+                        <h3 class="text-2xl font-bold mb-3">
+                            <a href="{% url 'project_detail' project.slug %}" class="hover:text-cyan-400 transition">
+                                {{ project.title }}
+                            </a>
+                        </h3>
+                        
+                        <p class="text-gray-400 mb-4 line-clamp-2">
+                            {{ project.description }}
+                        </p>
+                        
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            {% for tech in project.technologies|split_string:',' %}
+                            <span class="bg-cyan-500/20 text-cyan-400 px-3 py-1 rounded-full text-sm">
+                                {{ tech|strip_string }}
+                            </span>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="flex gap-4 pt-4 border-t border-zinc-700">
+                            <a href="{{ project.github_link }}" target="_blank" class="text-cyan-400 hover:text-cyan-300 transition">
+                                <i class="fab fa-github"></i> GitHub
+                            </a>
+                            {% if project.live_link %}
+                            <a href="{{ project.live_link }}" target="_blank" class="text-cyan-400 hover:text-cyan-300 transition">
+                                <i class="fas fa-globe"></i> Live Demo
+                            </a>
+                            {% endif %}
+                            <span class="text-gray-500 text-sm ml-auto">
+                                <i class="fas fa-eye"></i> {{ project.view_count }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+            {% if paginator.num_pages > 1 %}
+            <div class="flex justify-center gap-2 mt-12">
+                {% if projects_page.has_previous %}
+                    <a href="?q={{ query }}&page=1" class="px-4 py-2 bg-zinc-800 rounded-lg hover:bg-zinc-700">First</a>
+                    <a href="?q={{ query }}&page={{ projects_page.previous_page_number }}" class="px-4 py-2 bg-zinc-800 rounded-lg hover:bg-zinc-700">Previous</a>
+                {% endif %}
+                
+                <span class="px-4 py-2 text-gray-400">
+                    Page {{ projects_page.number }} of {{ paginator.num_pages }}
+                </span>
+                
+                {% if projects_page.has_next %}
+                    <a href="?q={{ query }}&page={{ projects_page.next_page_number }}" class="px-4 py-2 bg-cyan-500 rounded-lg hover:bg-cyan-600">Next</a>
+                    <a href="?q={{ query }}&page={{ paginator.num_pages }}" class="px-4 py-2 bg-cyan-500 rounded-lg hover:bg-cyan-600">Last</a>
+                {% endif %}
+            </div>
+            {% endif %}
+
+        {% elif query %}
+        <div class="text-center py-12">
+            <p class="text-gray-400 text-lg">
+                No projects found matching your search. Try another keyword!
+            </p>
+        </div>
+        {% else %}
+        <div class="text-center py-12">
+            <p class="text-gray-400 text-lg">
+                Enter a search term to find projects
+            </p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+{% endblock %}

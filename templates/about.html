@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+
+{% block title %}About - Wahab Ejaz{% endblock %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<section class="py-20 bg-gradient-to-b from-zinc-900 to-black">
+    <div class="max-w-7xl mx-auto px-4">
+        <!-- Profile Image -->
+        {% if profile and profile.image %}
+        <div class="flex justify-center mb-8">
+            <img 
+                src="{{ profile.image.url }}" 
+                alt="{{ profile.name }}"
+                class="w-48 h-48 rounded-full border-4 border-cyan-400 object-cover shadow-2xl"
+            >
+        </div>
+        {% endif %}
+        
+        <h1 class="text-6xl font-bold mb-4 text-center">{% if profile %}{{ profile.name }}{% else %}About Me{% endif %}</h1>
+        <p class="text-2xl text-gray-400 mb-8 text-center">
+            {% if profile and profile.title %}{{ profile.title }}{% else %}Developer | Learner | Problem Solver{% endif %}
+        </p>
+        
+        <!-- Stats -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div class="bg-zinc-900 p-6 rounded-xl text-center">
+                <h3 class="text-4xl font-bold text-cyan-400">{{ total_years }}+</h3>
+                <p class="text-gray-400">Years Experience</p>
+            </div>
+            <div class="bg-zinc-900 p-6 rounded-xl text-center">
+                <h3 class="text-4xl font-bold text-cyan-400">{{ projects_count }}+</h3>
+                <p class="text-gray-400">Projects Completed</p>
+            </div>
+            <div class="bg-zinc-900 p-6 rounded-xl text-center">
+                <h3 class="text-4xl font-bold text-cyan-400">{{ skills_count }}+</h3>
+                <p class="text-gray-400">Skills Mastered</p>
+            </div>
+            <div class="bg-zinc-900 p-6 rounded-xl text-center">
+                <h3 class="text-4xl font-bold text-cyan-400">∞</h3>
+                <p class="text-gray-400">Still Learning!</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Experience Section -->
+<section class="py-20">
+    <div class="max-w-7xl mx-auto px-4">
+        <h2 class="text-5xl font-bold mb-12">Professional Experience</h2>
+        
+        {% if experiences %}
+        <div class="space-y-8">
+            {% for exp in experiences %}
+            <div class="bg-zinc-900 p-8 rounded-2xl border-l-4 border-cyan-400 hover:shadow-2xl transition">
+                <div class="flex justify-between items-start mb-2">
+                    <div>
+                        <h3 class="text-2xl font-bold">{{ exp.position }}</h3>
+                        <p class="text-cyan-400 font-semibold">{{ exp.company }}</p>
+                    </div>
+                    <div class="text-right text-gray-400">
+                        {{ exp.start_date|date:"M Y" }} - 
+                        {% if exp.is_current %}
+                            <span class="text-green-400 font-bold">Present</span>
+                        {% else %}
+                            {{ exp.end_date|date:"M Y" }}
+                        {% endif %}
+                    </div>
+                </div>
+                <p class="text-gray-300 mt-4">{{ exp.description }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-gray-400">No experience added yet.</p>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Education Section -->
+<section class="py-20 bg-zinc-950">
+    <div class="max-w-7xl mx-auto px-4">
+        <h2 class="text-5xl font-bold mb-12">Education</h2>
+        
+        {% if educations %}
+        <div class="grid md:grid-cols-2 gap-8">
+            {% for edu in educations %}
+            <div class="bg-zinc-900 p-8 rounded-2xl border-t-4 border-cyan-400 hover:shadow-2xl transition">
+                <h3 class="text-2xl font-bold mb-2">{{ edu.degree }}</h3>
+                <p class="text-cyan-400 font-semibold mb-2">{{ edu.institution }}</p>
+                <p class="text-gray-400 mb-4">{{ edu.field_of_study }}</p>
+                <p class="text-gray-400 mb-4">
+                    <i class="fas fa-graduation-cap"></i> 
+                    {{ edu.start_year }} - {% if edu.end_year %}{{ edu.end_year }}{% else %}Present{% endif %}
+                </p>
+                {% if edu.description %}
+                <p class="text-gray-300">{{ edu.description }}</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-gray-400">No education information added yet.</p>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Skills Section -->
+<section class="py-20">
+    <div class="max-w-7xl mx-auto px-4">
+        <h2 class="text-5xl font-bold mb-12">Skills & Expertise</h2>
+        
+        {% if skills %}
+        <div class="grid md:grid-cols-2 gap-8">
+            {% for skill in skills %}
+            <div class="bg-zinc-900 p-6 rounded-2xl hover:shadow-2xl transition">
+                <div class="flex justify-between items-center mb-3">
+                    <h3 class="text-xl font-bold">{{ skill.name }}</h3>
+                    <span class="text-cyan-400 font-bold">{{ skill.percentage }}%</span>
+                </div>
+                <div class="w-full bg-gray-700 rounded-full h-3">
+                    <div class="bg-gradient-to-r from-cyan-400 to-blue-500 h-3 rounded-full" 
+                         style="width: {{ skill.percentage }}%">
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-gray-400">No skills added yet.</p>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Social Links Section -->
+<section class="py-20 bg-zinc-950">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+        <h2 class="text-5xl font-bold mb-12">Connect With Me</h2>
+        
+        {% if social_links %}
+        <div class="flex justify-center gap-8 flex-wrap">
+            {% for link in social_links %}
+            <a href="{{ link.url }}" target="_blank" class="group bg-zinc-900 p-8 rounded-2xl hover:bg-cyan-500 transition transform hover:scale-110 duration-300">
+                {% if 'github' in link.platform %}
+                    <i class="fab fa-github text-3xl text-cyan-400 group-hover:text-white"></i>
+                    <p class="mt-2 font-semibold group-hover:text-white">GitHub</p>
+                {% elif 'linkedin' in link.platform %}
+                    <i class="fab fa-linkedin text-3xl text-cyan-400 group-hover:text-white"></i>
+                    <p class="mt-2 font-semibold group-hover:text-white">LinkedIn</p>
+                {% elif 'twitter' in link.platform %}
+                    <i class="fab fa-twitter text-3xl text-cyan-400 group-hover:text-white"></i>
+                    <p class="mt-2 font-semibold group-hover:text-white">Twitter</p>
+                {% elif 'instagram' in link.platform %}
+                    <i class="fab fa-instagram text-3xl text-cyan-400 group-hover:text-white"></i>
+                    <p class="mt-2 font-semibold group-hover:text-white">Instagram</p>
+                {% elif 'email' in link.platform %}
+                    <i class="fas fa-envelope text-3xl text-cyan-400 group-hover:text-white"></i>
+                    <p class="mt-2 font-semibold group-hover:text-white">Email</p>
+                {% else %}
+                    <i class="fas fa-link text-3xl text-cyan-400 group-hover:text-white"></i>
+                    <p class="mt-2 font-semibold group-hover:text-white">{{ link.platform|title }}</p>
+                {% endif %}
+            </a>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+{% endblock %}

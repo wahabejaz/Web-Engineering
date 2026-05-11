@@ -1,0 +1,353 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+
+{% block title %}Wahab Ejaz - Full Stack Developer{% endblock %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<section class="min-h-screen flex flex-col justify-center items-center pt-20">
+    <div class="text-center max-w-3xl px-4">
+        <!-- Profile Image -->
+        {% if profile and profile.image %}
+        <div class="mb-8">
+            <img 
+                src="{{ profile.image.url }}" 
+                alt="{{ profile.name }}"
+                class="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-cyan-400 mx-auto object-cover shadow-2xl"
+            >
+        </div>
+        {% endif %}
+        
+        <h1 class="text-7xl md:text-8xl font-bold mb-6">
+            <span class="gradient-text">{% if profile %}{{ profile.name }}{% else %}Wahab Ejaz{% endif %}</span>
+        </h1>
+        
+        <p class="text-2xl md:text-3xl text-gray-400 mb-8">
+            {% if profile and profile.title %}{{ profile.title }}{% else %}Turning Ideas into Smart Applications{% endif %}
+        </p>
+        
+        <p class="text-gray-400 text-lg mb-12 leading-relaxed">
+            {% if profile and profile.bio %}
+                {{ profile.bio }}
+            {% else %}
+                BS Computer Science Student at IIUI | Software Engineering & Application Development | Web & Mobile Solutions | AI, Automation & Emerging Technologies Enthusiast
+            {% endif %}
+        </p>
+        
+        <!-- CTA Buttons -->
+        <div class="flex justify-center gap-6 flex-wrap">
+            <a href="/about/" class="bg-cyan-500 hover:bg-cyan-600 px-8 py-4 rounded-xl font-semibold transition transform hover:scale-105">
+                Explore My Work
+            </a>
+            {% if profile and profile.resume %}
+            <a href="{% url 'download_resume' %}" class="bg-green-600 hover:bg-green-700 px-8 py-4 rounded-xl font-semibold transition transform hover:scale-105">
+                <i class="fas fa-download"></i> Download CV
+            </a>
+            {% endif %}
+            <a href="#contact" class="border border-cyan-400 text-cyan-400 hover:bg-cyan-400/10 px-8 py-4 rounded-xl font-semibold transition">
+                Get in Touch
+            </a>
+        </div>
+    </div>
+    
+    <!-- Scroll Indicator -->
+    <div class="absolute bottom-10 animate-bounce">
+        <i class="fas fa-chevron-down text-cyan-400 text-2xl"></i>
+    </div>
+</section>
+
+<!-- Featured Projects Section -->
+{% if featured_projects %}
+<section class="py-20 bg-zinc-950" id="projects">
+    <div class="max-w-7xl mx-auto px-4">
+        <h2 class="text-5xl font-bold mb-12">
+            <span class="gradient-text">Featured Projects</span>
+        </h2>
+        
+        <div class="grid md:grid-cols-2 gap-8">
+            {% for project in featured_projects %}
+            <div class="bg-zinc-900 rounded-2xl overflow-hidden hover-scale hover:shadow-2xl transition group">
+                <div class="relative overflow-hidden h-64">
+                    <img src="{{ project.image.url }}" alt="{{ project.title }}" class="w-full h-full object-cover group-hover:scale-110 transition duration-300">
+                    {% if project.featured %}
+                    <div class="absolute top-4 right-4 bg-yellow-500 text-black px-3 py-1 rounded-full font-bold">
+                        <i class="fas fa-star"></i> Featured
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="p-6">
+                    <h3 class="text-2xl font-bold mb-3">
+                        <a href="{% url 'project_detail' project.slug %}" class="hover:text-cyan-400 transition">
+                            {{ project.title }}
+                        </a>
+                    </h3>
+                    
+                    <p class="text-gray-400 mb-4 line-clamp-2">{{ project.description }}</p>
+                    
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        {% for tech in project.technologies|split_string:',' %}
+                        <span class="bg-cyan-500/20 text-cyan-400 px-2 py-1 rounded text-sm">
+                            {{ tech|strip_string }}
+                        </span>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="flex gap-4 pt-4 border-t border-zinc-700">
+                        <a href="{{ project.github_link }}" target="_blank" class="text-cyan-400 hover:text-cyan-300 transition">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        {% if project.live_link %}
+                        <a href="{{ project.live_link }}" target="_blank" class="text-cyan-400 hover:text-cyan-300 transition">
+                            <i class="fas fa-globe"></i>
+                        </a>
+                        {% endif %}
+                        <span class="text-gray-500 text-sm ml-auto">
+                            <i class="fas fa-eye"></i> {{ project.view_count }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- All Projects Section -->
+<section class="py-20">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="flex justify-between items-center mb-12">
+            <h2 class="text-5xl font-bold">
+                <span class="gradient-text">All Projects</span>
+            </h2>
+            <a href="/search/" class="text-cyan-400 hover:text-cyan-300 font-semibold">
+                View All <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+        
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+            {% for project in projects_page %}
+            <div class="bg-zinc-900 rounded-2xl overflow-hidden hover-scale hover:shadow-2xl transition group">
+                {% if project.image %}
+                <div class="relative overflow-hidden h-48">
+                    <img src="{{ project.image.url }}" alt="{{ project.title }}" class="w-full h-full object-cover group-hover:scale-110 transition duration-300">
+                </div>
+                {% else %}
+                <div class="relative overflow-hidden h-48 bg-gradient-to-br from-cyan-900 to-zinc-900 flex items-center justify-center">
+                    <i class="fas fa-image text-gray-600 text-4xl"></i>
+                </div>
+                {% endif %}
+                
+                <div class="p-6">
+                    <h3 class="text-xl font-bold mb-2">
+                        <a href="{% url 'project_detail' project.slug %}" class="hover:text-cyan-400 transition">
+                            {{ project.title }}
+                        </a>
+                    </h3>
+                    
+                    <p class="text-gray-400 mb-4 line-clamp-2">{{ project.description }}</p>
+                    
+                    <div class="flex gap-4 pt-4 border-t border-zinc-700">
+                        <a href="{{ project.github_link }}" target="_blank" class="text-cyan-400 hover:text-cyan-300 transition text-sm">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        {% if project.live_link %}
+                        <a href="{{ project.live_link }}" target="_blank" class="text-cyan-400 hover:text-cyan-300 transition text-sm">
+                            <i class="fas fa-globe"></i>
+                        </a>
+                        {% endif %}
+                        <span class="text-gray-500 text-sm ml-auto">
+                            <i class="fas fa-eye"></i> {{ project.view_count }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p class="text-gray-400 col-span-full text-center py-8">No projects yet. Check back soon!</p>
+            {% endfor %}
+        </div>
+        
+        <!-- Pagination -->
+        {% if paginator.num_pages > 1 %}
+        <div class="flex justify-center gap-2 mb-12">
+            {% if projects_page.has_previous %}
+                <a href="?page=1" class="px-4 py-2 bg-zinc-800 rounded-lg hover:bg-zinc-700 transition">First</a>
+                <a href="?page={{ projects_page.previous_page_number }}" class="px-4 py-2 bg-zinc-800 rounded-lg hover:bg-zinc-700 transition">Prev</a>
+            {% endif %}
+            
+            <span class="px-4 py-2 text-gray-400">
+                Page {{ projects_page.number }} of {{ paginator.num_pages }}
+            </span>
+            
+            {% if projects_page.has_next %}
+                <a href="?page={{ projects_page.next_page_number }}" class="px-4 py-2 bg-cyan-500 rounded-lg hover:bg-cyan-600 transition">Next</a>
+                <a href="?page={{ paginator.num_pages }}" class="px-4 py-2 bg-cyan-500 rounded-lg hover:bg-cyan-600 transition">Last</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Skills Section -->
+<section class="py-20 bg-zinc-950" id="skills">
+    <div class="max-w-7xl mx-auto px-4">
+        <h2 class="text-5xl font-bold mb-12">
+            <span class="gradient-text">Skills & Technologies</span>
+        </h2>
+        
+        {% for category, skills in skills_by_category.items %}
+        <div class="mb-12">
+            <h3 class="text-2xl font-bold mb-6 text-cyan-400">{{ category }}</h3>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {% for skill in skills %}
+                <div class="bg-zinc-900 p-6 rounded-2xl hover:shadow-lg transition">
+                    <div class="flex justify-between items-center mb-3">
+                        <h4 class="text-lg font-bold">{{ skill.name }}</h4>
+                        <span class="text-cyan-400 font-bold text-sm">{{ skill.percentage }}%</span>
+                    </div>
+                    <div class="w-full bg-gray-700 rounded-full h-2">
+                        <div class="bg-gradient-to-r from-cyan-400 to-blue-500 h-2 rounded-full" 
+                             style="width: {{ skill.percentage }}%"></div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+{% if testimonials %}
+<section class="py-20" id="testimonials">
+    <div class="max-w-7xl mx-auto px-4">
+        <h2 class="text-5xl font-bold mb-12">
+            <span class="gradient-text">What Clients Say</span>
+        </h2>
+        
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for testimonial in testimonials %}
+            <div class="bg-zinc-900 p-8 rounded-2xl border-l-4 border-cyan-400 hover:shadow-lg transition">
+                <div class="flex items-center mb-4">
+                    {% for i in "12345" %}
+                        {% if forloop.counter <= testimonial.rating %}
+                            <i class="fas fa-star text-yellow-400"></i>
+                        {% else %}
+                            <i class="far fa-star text-yellow-400"></i>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                
+                <p class="text-gray-300 mb-6 italic">
+                    "{{ testimonial.content }}"
+                </p>
+                
+                <div class="flex items-center gap-4">
+                    {% if testimonial.author_image %}
+                    <img src="{{ testimonial.author_image.url }}" alt="{{ testimonial.author_name }}" class="w-12 h-12 rounded-full object-cover">
+                    {% else %}
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-white font-bold">
+                        {{ testimonial.author_name|first }}
+                    </div>
+                    {% endif %}
+                    
+                    <div>
+                        <h4 class="font-bold">{{ testimonial.author_name }}</h4>
+                        <p class="text-gray-400 text-sm">{{ testimonial.author_title }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Experience & Education Quick Preview -->
+{% if experiences %}
+<section class="py-20 bg-zinc-950">
+    <div class="max-w-7xl mx-auto px-4">
+        <h2 class="text-5xl font-bold mb-12">
+            <span class="gradient-text">Experience</span>
+        </h2>
+        
+        <div class="space-y-4 mb-8">
+            {% for exp in experiences|slice:":3" %}
+            <div class="bg-zinc-900 p-6 rounded-xl border-l-4 border-cyan-400 hover:shadow-lg transition">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="text-xl font-bold">{{ exp.position }}</h3>
+                        <p class="text-cyan-400">{{ exp.company }}</p>
+                    </div>
+                    {% if exp.is_current %}
+                    <span class="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-sm">Currently</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <a href="/about/" class="text-cyan-400 hover:text-cyan-300 font-semibold">
+            View Full Experience <i class="fas fa-arrow-right"></i>
+        </a>
+    </div>
+</section>
+{% endif %}
+
+<!-- Contact Section -->
+<section class="py-20" id="contact">
+    <div class="max-w-3xl mx-auto px-4">
+        <h2 class="text-5xl font-bold mb-4">
+            <span class="gradient-text">Let's Work Together</span>
+        </h2>
+        
+        <p class="text-gray-400 text-lg mb-12">
+            Have a project in mind? Let's discuss how I can help bring your ideas to life.
+        </p>
+
+        <form method="POST" class="space-y-6">
+            {% csrf_token %}
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <input 
+                    type="text"
+                    name="name"
+                    placeholder="Your Name"
+                    required
+                    class="w-full p-4 bg-zinc-900 rounded-xl border border-zinc-700 focus:border-cyan-400 focus:outline-none transition"
+                >
+
+                <input 
+                    type="email"
+                    name="email"
+                    placeholder="Your Email"
+                    required
+                    class="w-full p-4 bg-zinc-900 rounded-xl border border-zinc-700 focus:border-cyan-400 focus:outline-none transition"
+                >
+            </div>
+
+            <input 
+                type="text"
+                name="subject"
+                placeholder="Subject"
+                class="w-full p-4 bg-zinc-900 rounded-xl border border-zinc-700 focus:border-cyan-400 focus:outline-none transition"
+            >
+
+            <textarea 
+                name="message"
+                placeholder="Your Message"
+                required
+                rows="6"
+                class="w-full p-4 bg-zinc-900 rounded-xl border border-zinc-700 focus:border-cyan-400 focus:outline-none transition resize-none"
+            ></textarea>
+
+            <button type="submit" class="w-full bg-cyan-500 hover:bg-cyan-600 px-8 py-4 rounded-xl font-semibold transition transform hover:scale-105">
+                <i class="fas fa-paper-plane"></i> Send Message
+            </button>
+        </form>
+    </div>
+</section>
+
+{% endblock %}

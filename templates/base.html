@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <title>{% block title %} Wahab Ejaz - Portfolio{% endblock %}</title>
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .smooth-scroll {
+            scroll-behavior: smooth;
+        }
+        
+        .hover-scale {
+            transition: transform 0.3s ease;
+        }
+        
+        .hover-scale:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+
+<body class="bg-black text-white smooth-scroll">
+    <!-- Navigation Bar -->
+    <nav class="sticky top-0 bg-zinc-900/95 backdrop-blur-md border-b border-zinc-800 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="/" class="text-2xl font-bold gradient-text">
+                        WAHAB
+                    </a>
+                </div>
+                
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="/" class="hover:text-cyan-400 transition">Home</a>
+                    <a href="/about/" class="hover:text-cyan-400 transition">About</a>
+                    <a href="/#projects" class="hover:text-cyan-400 transition">Projects</a>
+                    <a href="/#testimonials" class="hover:text-cyan-400 transition">Testimonials</a>
+                    <a href="/#contact" class="hover:text-cyan-400 transition">Contact</a>
+                    <a href="/search/" class="text-cyan-400 hover:text-cyan-300 transition">
+                        <i class="fas fa-search"></i>
+                    </a>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <a href="/search/" class="text-cyan-400 hover:text-cyan-300 transition">
+                        <i class="fas fa-search"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Messages Display -->
+    {% if messages %}
+    <div class="fixed top-20 right-4 space-y-2 z-50">
+        {% for message in messages %}
+        <div class="p-4 rounded-lg {% if message.tags %}{% if 'error' in message.tags %}bg-red-600{% else %}bg-green-600{% endif %}{% else %}bg-blue-600{% endif %} shadow-lg max-w-md">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    {% block content %}
+    {% endblock %}
+    
+    <!-- Footer -->
+    <footer class="bg-zinc-900 border-t border-zinc-800 py-12 mt-20">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                <!-- Brand -->
+                <div>
+                    <h3 class="text-2xl font-bold gradient-text mb-3">WAHAB EJAZ</h3>
+                    <p class="text-gray-400">Django Developer • AI Enthusiast • Web Engineer</p>
+                </div>
+                
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="/" class="text-gray-400 hover:text-cyan-400 transition">Home</a></li>
+                        <li><a href="/about/" class="text-gray-400 hover:text-cyan-400 transition">About</a></li>
+                        <li><a href="#projects" class="text-gray-400 hover:text-cyan-400 transition">Projects</a></li>
+                        <li><a href="/search/" class="text-gray-400 hover:text-cyan-400 transition">Search</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Social Links -->
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Connect</h4>
+                    <div class="flex space-x-4">
+                        {% if social_links %}
+                            {% for link in social_links %}
+                                <a href="{{ link.url }}" target="_blank" class="text-gray-400 hover:text-cyan-400 transition text-xl">
+                                    {% if 'github' in link.platform %}
+                                        <i class="fab fa-github"></i>
+                                    {% elif 'linkedin' in link.platform %}
+                                        <i class="fab fa-linkedin"></i>
+                                    {% elif 'twitter' in link.platform %}
+                                        <i class="fab fa-twitter"></i>
+                                    {% elif 'instagram' in link.platform %}
+                                        <i class="fab fa-instagram"></i>
+                                    {% elif 'youtube' in link.platform %}
+                                        <i class="fab fa-youtube"></i>
+                                    {% elif 'email' in link.platform %}
+                                        <i class="fas fa-envelope"></i>
+                                    {% else %}
+                                        <i class="fas fa-link"></i>
+                                    {% endif %}
+                                </a>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Copyright -->
+            <div class="border-t border-zinc-800 pt-8 text-center">
+                <p class="text-gray-400">
+                    © 2026 Wahab Ejaz. All rights reserved. | Built with Django & Tailwind CSS
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Auto-dismiss messages script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const messages = document.querySelectorAll('[role="alert"], .fixed.top-20 > div');
+            
+            messages.forEach(function(message) {
+                // Set a timeout to fade out and remove the message after 4 seconds
+                setTimeout(function() {
+                    message.style.transition = 'opacity 0.5s ease-out';
+                    message.style.opacity = '0';
+                    
+                    // Remove from DOM after fade completes
+                    setTimeout(function() {
+                        message.remove();
+                    }, 500);
+                }, 4000);
+            });
+        });
+    </script>
+</body>
+</html>

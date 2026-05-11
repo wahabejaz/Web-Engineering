@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+
+{% block title %}{{ project.title }} - Wahab Ejaz{% endblock %}
+
+{% block content %}
+
+<section class="py-20">
+    <div class="max-w-4xl mx-auto px-4">
+        <!-- Project Header -->
+        <div class="mb-12">
+            <a href="/" class="text-cyan-400 hover:text-cyan-300 mb-4 inline-block">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
+            
+            <h1 class="text-5xl font-bold mb-4">{{ project.title }}</h1>
+            
+            {% if project.featured %}
+            <div class="inline-block bg-yellow-500/20 text-yellow-400 px-4 py-2 rounded-full text-sm font-semibold mb-4">
+                <i class="fas fa-star"></i> Featured Project
+            </div>
+            {% endif %}
+            
+            <p class="text-gray-400 text-lg">
+                <i class="fas fa-calendar"></i> {{ project.created_at|date:"F d, Y" }} • 
+                <i class="fas fa-eye"></i> {{ project.view_count }} views
+            </p>
+        </div>
+
+        <!-- Project Image -->
+        {% if project.image %}
+        <div class="mb-12 rounded-2xl overflow-hidden shadow-2xl">
+            <img src="{{ project.image.url }}" alt="{{ project.title }}" class="w-full h-auto">
+        </div>
+        {% else %}
+        <div class="mb-12 rounded-2xl overflow-hidden shadow-2xl bg-gradient-to-br from-cyan-900 to-zinc-900 h-96 flex items-center justify-center">
+            <div class="text-center">
+                <i class="fas fa-image text-gray-600 text-6xl mb-4"></i>
+                <p class="text-gray-500">No image available</p>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Project Description -->
+        <div class="mb-12">
+            <h2 class="text-3xl font-bold mb-6">Overview</h2>
+            <p class="text-gray-300 text-lg leading-relaxed">
+                {{ project.description }}
+            </p>
+        </div>
+
+        <!-- Technologies -->
+        <div class="mb-12">
+            <h2 class="text-3xl font-bold mb-6">Technologies Used</h2>
+            <div class="flex flex-wrap gap-3">
+                {% for tech in project.technologies|split_string:',' %}
+                <span class="bg-cyan-500/20 text-cyan-400 px-5 py-3 rounded-full font-semibold">
+                    {{ tech|strip_string }}
+                </span>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Project Links -->
+        <div class="mb-12 flex gap-4">
+            <a href="{{ project.github_link }}" target="_blank" class="bg-cyan-500 hover:bg-cyan-600 px-8 py-4 rounded-xl font-semibold transition flex items-center gap-2">
+                <i class="fab fa-github"></i> View on GitHub
+            </a>
+            {% if project.live_link %}
+            <a href="{{ project.live_link }}" target="_blank" class="bg-zinc-700 hover:bg-zinc-600 px-8 py-4 rounded-xl font-semibold transition flex items-center gap-2">
+                <i class="fas fa-globe"></i> Live Demo
+            </a>
+            {% endif %}
+        </div>
+
+        <!-- Related Projects -->
+        {% if related_projects %}
+        <div class="mt-20 pt-12 border-t border-zinc-800">
+            <h2 class="text-3xl font-bold mb-8">Related Projects</h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                {% for rel_project in related_projects %}
+                <div class="bg-zinc-900 rounded-2xl overflow-hidden hover-scale hover:shadow-2xl shadow-lg">
+                    <img 
+                        src="{{ rel_project.image.url }}" 
+                        alt="{{ rel_project.title }}"
+                        class="w-full h-48 object-cover"
+                    >
+                    
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">
+                            <a href="{% url 'project_detail' rel_project.slug %}" class="hover:text-cyan-400 transition">
+                                {{ rel_project.title }}
+                            </a>
+                        </h3>
+                        <p class="text-gray-400 mb-4 line-clamp-2">
+                            {{ rel_project.description }}
+                        </p>
+                        <a href="{% url 'project_detail' rel_project.slug %}" class="text-cyan-400 hover:text-cyan-300 font-semibold">
+                            View Project <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+{% endblock %}
