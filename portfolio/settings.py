@@ -141,7 +141,12 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static'
 ] if (BASE_DIR / 'static').exists() else []
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# WhiteNoise Configuration for production
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+WHITENOISE_AUTOREFRESH = True  # Automatically refresh static files on change
+WHITENOISE_USE_FINDERS = True  # Use Django finders to locate static files
+WHITENOISE_COMPRESS_OFFLINE = True  # Compress static files offline
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
