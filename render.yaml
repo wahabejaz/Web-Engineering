@@ -5,7 +5,7 @@ services:
     plan: free
     pythonVersion: 3.14
     buildCommand: bash build.sh
-    startCommand: gunicorn portfolio.wsgi --workers 1 --bind 0.0.0.0:$PORT --timeout 120 --access-logfile - --error-logfile -
+    startCommand: bash start.sh
     envVars:
       - key: DJANGO_SECRET_KEY
         scope: build,runtime

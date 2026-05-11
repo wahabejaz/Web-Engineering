@@ -1,1 +1,1 @@
-web: gunicorn portfolio.wsgi --workers 2 --bind 0.0.0.0:$PORT --log-file -
+web: bash start.sh
