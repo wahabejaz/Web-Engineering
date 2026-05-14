@@ -128,6 +128,3 @@ Use the superuser account created during setup to manage projects, profile conte
 - Static files are collected into `staticfiles/` for production use.
 - The project is configured to use SQLite by default but supports MySQL/PostgreSQL through environment variables.
 
-## License
-
-This repository does not include a license file. Add a `LICENSE` if you want to publish or share this project publicly.
